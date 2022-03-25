@@ -1,0 +1,5 @@
+[flake8]
+builtins = json
+statistics = true
+ignore = E202, E711, E712
+exclude = ./data,./src,.svn,CVS,.bzr,.hg,.git,__pycache__
