@@ -1,0 +1,6 @@
+DATABASE_USER=discount-service-db-user
+DATABASE_PASSWORD=discount-service-db-password
+DATABASE_HOST=postgresql
+DATABASE_PORT=5432
+DATABASE_NAME=discount-service
+ENVIRONMENT=production

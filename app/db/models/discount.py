@@ -1,5 +1,6 @@
 import random
 import secrets
+from datetime import datetime
 
 from sqlalchemy import (
     Column,
@@ -48,10 +49,10 @@ class Discount(Base):
     percentage = Column(FLOAT, nullable=False)
 
     created_at = Column(TIMESTAMP, server_default=func.now(), nullable=False, index=True)
-    expires_at = Column(DateTime)
+    expires_at = Column(TIMESTAMP)
 
-    redeemed = Column(Boolean, server_default=expression.false())
-    redeemed_at = Column(DateTime)
+    redeemed = Column(Boolean, default=False)
+    redeemed_at = Column(TIMESTAMP)
     user_id = Column(String, index=True)
 
     purchase_info_id = Column(
@@ -66,7 +67,7 @@ class Discount(Base):
         Returns:
             boolean indicates code has expired or not
         """
-        return current_datetime() > self.expires_at if self.expires_at else False
+        return datetime.utcnow() > self.expires_at if self.expires_at else False
 
     @property
     def is_discount_valid(self) -> bool:
@@ -135,7 +136,7 @@ class Discount(Base):
             for _ in range(count)
         ]
         session.add_all(discount_objs)
-        await session.commit()
+        await session.flush()
 
     @classmethod
     async def get_available_discount_codes(
@@ -160,7 +161,7 @@ class Discount(Base):
         q = (
             select(cls)
             .join(DiscountPurchaseInfo, cls.purchase_info_id == DiscountPurchaseInfo.id)
-            .where(cls.user_id == None, cls.redeemed == False, cls.expires_at > current_datetime())
+            .where(cls.user_id == None, cls.redeemed == False, cls.expires_at > datetime.utcnow())
         )
         q = cls.build_where(DiscountPurchaseInfo, q, purchase_info.dict())
         return (await session.execute(q)).scalars().first()

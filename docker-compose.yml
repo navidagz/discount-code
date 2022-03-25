@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: discount-app-db
+    hostname: postgresql
+    env_file: .postgres_env
+    restart: always
+
+  app:
+    container_name: discount-app
+    build:
+      context: .
+    env_file: .prod_env
+    environment:
+      WAIT_HOSTS: postgres:5432
+    expose:
+      - 8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres

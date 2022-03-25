@@ -5,6 +5,7 @@ from fastapi import HTTPException, status
 from app.controllers.base import BaseController
 from app.db import Discount
 from app.schemas.discount import FetchDiscountRequestSchema, DiscountPurchaseSchema
+from app.utils.external_services.notification_service import NotificationServiceCall
 
 
 class FetchDiscountCodeController(BaseController):
@@ -34,15 +35,24 @@ class FetchDiscountCodeController(BaseController):
             )
         return discount
 
-    async def fetch(self, payload: FetchDiscountRequestSchema) -> Dict:
+    async def _update_discount_and_set_user_id(self, discount: Discount, user_id: str):
+        await discount.update_record(self.session, {"user_id": user_id})
+
+    async def fetch(self, payload: FetchDiscountRequestSchema, user_id: str) -> Dict:
         """
         Fetch discount code for user
 
         Args:
-            payload (FetchDiscountRequestSchema):
+            payload (FetchDiscountRequestSchema): payload for fetching discount code
+            user_id (str): user id
 
         Returns:
             Discount obj
         """
 
-        return await self._fetch_available_discount_code(payload.purchase_info)
+        discount = await self._fetch_available_discount_code(payload.purchase_info)
+
+        await self._update_discount_and_set_user_id(discount, user_id)
+        await NotificationServiceCall().notify_brand(discount)
+
+        return discount

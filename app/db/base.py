@@ -45,3 +45,9 @@ class Base:
         q = select(cls)
         q = cls.build_where(cls, q, query_filter)
         return (await session.execute(q)).scalar()
+
+    async def update_record(self, session: AsyncSession, data: Dict):
+        for k, v in data.items():
+            setattr(self, k, v)
+
+        await session.flush()

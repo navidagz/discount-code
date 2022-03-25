@@ -1,0 +1,3 @@
+POSTGRES_USER=discount-service-db-user
+POSTGRES_DB=discount-service
+POSTGRES_PASSWORD=discount-service-db-password

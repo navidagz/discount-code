@@ -25,7 +25,7 @@ class DiscountCreateRequestSchema(BaseSchema):
         if expires_at is not None and expires_at <= current_datetime():
             raise ValueError("expires_at can not be in the past")
 
-        return expires_at
+        return expires_at.replace(tzinfo=None)
 
 
 class DiscountCreateResponseSchema(BaseSchema):
@@ -40,3 +40,4 @@ class FetchDiscountRequestSchema(BaseSchema):
 class FetchDiscountResponseSchema(BaseSchema):
     code: str
     expires_at: datetime
+    percentage: float

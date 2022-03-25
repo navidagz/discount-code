@@ -5,3 +5,5 @@ if [ "$1" == "html" ]; then
 else
     pytest --cov=app tests/test*
 fi
+
+rm -rf ./test.db
