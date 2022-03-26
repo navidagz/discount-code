@@ -18,10 +18,10 @@ async def generate_branch_discount(
 ):
     try:
         await GenerateDiscountCodeController(session=session).generate(payload)
+        return DiscountCreateResponseSchema(success=True)
     except Exception as exc:
         logger.error(exc)
         raise HTTPException(
-            status.HTTP_400_BAD_REQUEST, {"success": False, "msg": "Can not create discount code"}
+            status.HTTP_400_BAD_REQUEST,
+            DiscountCreateResponseSchema(success=False, msg="Can not create discount code").dict(),
         )
-
-    return {"success": True}

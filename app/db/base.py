@@ -32,7 +32,7 @@ class Base:
             instance = cls(**kwargs)
             try:
                 session.add(instance)
-                await session.commit()
+                await session.flush()
                 await session.refresh(instance)
             except Exception:
                 await session.rollback()
@@ -41,7 +41,7 @@ class Base:
                 return instance, True
 
     @classmethod
-    async def get_by_filter(cls, session: AsyncSession, query_filter: Dict):
+    async def get_by_filter(cls, session: AsyncSession, query_filter: Dict):  # pragma: no cover
         q = select(cls)
         q = cls.build_where(cls, q, query_filter)
         return (await session.execute(q)).scalar()

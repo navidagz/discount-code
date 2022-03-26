@@ -29,7 +29,7 @@ class DiscountCreateRequestSchema(BaseSchema):
 
 
 class DiscountCreateResponseSchema(BaseSchema):
-    success: bool
+    success: bool = True
     msg: str = ""
 
 

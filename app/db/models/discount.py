@@ -79,7 +79,7 @@ class Discount(Base):
         """
         return not self.is_expired and not self.redeemed
 
-    async def redeem_discount(self, session: AsyncSession):
+    async def redeem_discount(self, session: AsyncSession):  # pragma: no cover
         """
         Redeem discount code
 
@@ -136,7 +136,7 @@ class Discount(Base):
             for _ in range(count)
         ]
         session.add_all(discount_objs)
-        await session.flush()
+        await session.commit()
 
     @classmethod
     async def get_available_discount_codes(

@@ -21,6 +21,6 @@ class GenerateDiscountCodeController(BaseController):
         return payload_dict
 
     async def generate(self, payload: DiscountCreateRequestSchema):
-        return await Discount.bulk_create_discount_code(
+        await Discount.bulk_create_discount_code(
             self.session, **(await self._create_payload_for_controller(payload))
         )
