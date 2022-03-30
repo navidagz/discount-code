@@ -164,4 +164,5 @@ class Discount(Base):
             .where(cls.user_id == None, cls.redeemed == False, cls.expires_at > datetime.utcnow())
         )
         q = cls.build_where(DiscountPurchaseInfo, q, purchase_info.dict())
+        q = q.with_for_update()
         return (await session.execute(q)).scalars().first()
